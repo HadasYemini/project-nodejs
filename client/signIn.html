@@ -11,12 +11,10 @@
 <body>
     <div id="container">
         <h1>Top-Accessories</h1>
-        <form method="post" action="/signUp" onsubmit="return signUp()">
             <input id="email" name="email" type="email" placeholder="Enter your email adress...">
             <input id="password" name="password" type="password" placeholder="Enter your password...">
             <input type="button" id="signIn" value="SignIn" onclick="userValidation()">
-            <button type="submit" id="signUp" >Sign Up</button>
-        </form>
+            <button id="signUp" onclick="window.location.href = '/signUp'">Sign Up</button>
     </div>
     
     <div id="error-con">

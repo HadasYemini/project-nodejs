@@ -9,7 +9,7 @@ app.use(bp.urlencoded());
 const db = require("mongoose");
 db.connect(
   "mongodb+srv://hadas:hy1234hy@cluster0.nefe6tn.mongodb.net/svshopDb"
-//  "mongodb+srv://ynon:ChyEqc7VUc7GbxfV@cluster0.kdysbnh.mongodb.net/" ynon
+  //  "mongodb+srv://ynon:ChyEqc7VUc7GbxfV@cluster0.kdysbnh.mongodb.net/svshopDb" //ynon
 );
 
 const userSchema = db.Schema({
@@ -28,8 +28,10 @@ const productSchema = db.Schema({
 const productsModel = db.model("products", productSchema);
 
 const orderSchema = db.Schema({
-  email : String, //email
+  name: String,
+  email: String,
   products: Array, //list {name,price}
+  confirm: Boolean,
 });
 
 const ordersModel = db.model("orders", orderSchema);
@@ -41,24 +43,19 @@ app.get("/", (req, res) => {
 
 app.post("/userValidation", async (req, res) => {
   let { email, password } = req.body;
-  let result = await usersModel.find({ email: email }); // return array
-  console.log(`${email} ${password} sfsfsf ${result}`);
+  const result = await usersModel.find({ email, password }); // return array
   if (result.length === 0) {
     res.json({ Error: "Create account, click on signUp button" });
     //res.status(400).json({error:"No users found"})
   } else {
     //? goto prouducts list
-    res.json({ url: "/products" });
+    res.json({ url: "/products", name: result[0].name });
   }
 });
 
 // ----------------------- SIGN UP --------------------------------------/
 
-// app.get("/signUp", (req, res) => {
-//   res.sendFile(__dirname + "/client/signUp.html");
-// });
-
-app.post("/signUp", (req, res) => {
+app.get("/signUp", (req, res) => {
   res.sendFile(__dirname + "/client/signUp.html");
 });
 
@@ -130,28 +127,51 @@ app.get("/buy", (req, res) => {
   res.sendFile(__dirname + "/client/buy.html");
 });
 
-app.get("/getTotalOrder", async (req, res) => {
-  let order = await ordersModel.findOne({}).select("-_id -__v");
+app.post("/getTotalOrder", async (req, res) => {
+  let order = await ordersModel.findOne({_id:req.body.orderId}).select("-_id -__v");
   console.log(`order = ${order} => getTotalOrder`);
-  const totalPrice = order.products.reduce((accumulator, currentItem) => accumulator + Number(currentItem.price),0);
+  const totalPrice = order.products.reduce(
+    (accumulator, currentItem) => accumulator + Number(currentItem.price),
+    0
+  );
   const totalProducts = order.products.length;
-  console.log(`totalPrice = ${totalPrice} totalProducts = ${totalProducts}`);
   res.json({ totalPrice, totalProducts });
 });
 
 app.post("/saveOrder", async (req, res) => {
-  let order = { email: "hadass@comp.net", products: req.body.order };
-  console.log( "saveOrder 0 0 = ",order);
-  await ordersModel.insertMany(order);
-  console.log( "saveOrder 1 1 = ",order);
-  res.json({ url: "/buy" });
+  const order = { name : req.body.name,email: req.body.email, products: req.body.order, confirm:false };
+  const result = await ordersModel.insertMany(order);
+  console.log('/saveorder=>',result)
+  res.json({ url: "/buy" ,_id:result[0]._id});
 });
 
-//============================================================/
+app.post("/approveOrder", async(req,res) => {
+    const result = await ordersModel.findOneAndUpdate(
+        { _id: req.body.orderId }, // Filter: Find the document with the specified ID
+        { confirm: true }   // Update: Set the 'name' field to the new value
+    )
+    console.log('/approveOrder=>',result)
+    res.json({ url: "/exit"}); 
+})
+//======================= E X I T =============================/
+app.get("/exit", (req, res) => {
+    res.sendFile(__dirname + "/client/exit.html");
+  });
+
+//========================= A D M I N =========================/
 app.get("/all", middleExample, (req, res) => {
   res.sendFile(__dirname + "/client/orders.html");
 });
 
+app.get("/getOrdersApprove", async (req, res) => {
+    const orders = await ordersModel.find({confirm:true}).select("-_id -__v -confirm")
+    if (orders.length === 0) {
+        res.json({Error : 'error'})
+    }else{
+        res.json({orders})
+    }
+});
+  
 function middleExample(req, res, next) {
   if (req.query.admin == "true") {
     next();

@@ -1,30 +1,31 @@
-
-
 let products;
 
 const buyProducts = async () => {
-    const order = products.filter(item => document.getElementById(item.name).classList.contains('select'))
+  const order = products.filter((item) =>
+    document.getElementById(item.name).classList.contains("select")
+  );
+  const user = await JSON.parse(localStorage.getItem('user'));
 
-   let res = await fetch("/saveOrder", {
+  let res = await fetch("/saveOrder", {
     headers: {
       "Content-Type": "application/json",
     },
     method: "post",
     body: JSON.stringify({
-        order
+      name:user.name,
+      email:user.email,
+      order
     }),
   });
   let data = await res.json();
   if (data.Error) {
-    console.log(`${data.Error} **** buy products`);
     displayError(data.Error);
   } else {
-    console.log(data);
+    user.orderId = data._id
+    await localStorage.setItem('user',JSON.stringify(user))
     window.location.href = data.url;
   }
 };
-
-
 
 const getProducts = async () => {
   let res = await fetch("/getProducts"); //get
@@ -35,8 +36,6 @@ const getProducts = async () => {
 
 function initProducts(list) {
   products = list;
-  //  const e = document.querySelector("table");
-  //  if (e) e.remove();
   let table = document.createElement("table");
   table.classList.add("table");
   const header = table.insertRow();
@@ -47,7 +46,7 @@ function initProducts(list) {
   }
   list.forEach((item, index) => {
     let product = table.insertRow();
-    product.id = item.name
+    product.id = item.name;
     product.classList.add("product");
     product.onclick = () => {
       if (product.classList.contains("select")) {

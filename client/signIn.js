@@ -20,12 +20,17 @@ let password = document.getElementById("password").value;
       password,
     }),
   });
-  let data = await res.json();
+  const data = await res.json();
   if (data.Error) {
     console.log(`${data.Error} **** user validation`);
     displayError(data.Error);
   } else {
+    const user = {
+      email,
+      name:data.name
+    }
+    console.log('=======',user,data)
+    await localStorage.setItem('user',JSON.stringify(user))
     window.location.href = data.url;
-    console.log(data.url);
   }
 };

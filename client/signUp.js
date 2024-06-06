@@ -32,9 +32,9 @@ const userValiditaion = async () => {
   });
   let data = await res.json();
   if (data.Error) {
-    console.log(`${data.Error} **** user validation`);
     displayError(data.Error);
   } else {
+    await localStorage.setItem('user',JSON.stringify({name,email}))
     window.location.href = data.url;
     console.log(data.url);
   }

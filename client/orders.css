@@ -24,18 +24,3 @@ td {
 .header {
     background-color: beige;
 }
-
-.product {
-    cursor: pointer;
-}
-
-.product:hover {
-    background-color: blueviolet;
-}
-
-.product.select {
-    background-color: green;
-}
-#buy {
-    cursor: pointer;
-}

@@ -1,7 +1,46 @@
 const getTotalOrder = async () => {
-  let res = await fetch("/getTotalOrder"); //get
+  const user = await JSON.parse(localStorage.getItem("user"));
+  console.log(user, user.name);
+  let res = await fetch("/getTotalOrder", {
+    headers: {
+      "Content-Type": "application/json",
+    },
+    method: "post",
+    body: JSON.stringify({
+      name: user.name,
+      email: user.email,
+      orderId: user.orderId,
+    }),
+  });
   let data = await res.json();
-  console.log("order = ", data, "=>getTotalOrder");
+  if (data.Error) {
+    displayError(data.Error);
+  } else {
+    document.getElementById("totalProducts").innerHTML = data.totalProducts;
+    document.getElementById("totalPrice").innerHTML = data.totalPrice;
+  }
 };
 
 getTotalOrder();
+
+const approveOrder = async () => {
+  const user = await JSON.parse(localStorage.getItem("user"));
+
+  let res = await fetch("/approveOrder", {
+    headers: {
+      "Content-Type": "application/json",
+    },
+    method: "post",
+    body: JSON.stringify({
+      name: user.name,
+      email: user.email,
+      orderId: user.orderId,
+    }),
+  });
+  let data = await res.json();
+  if (data.Error) {
+    displayError(data.Error);
+  } else {
+    window.location.href = data.url;
+  }
+};

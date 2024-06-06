@@ -5,15 +5,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TopAccessories</title>
+    <link rel="stylesheet" href="buy.css">
 </head>
 
 <body>
-    <h1>Top-Accessories</h1>
-    <label>Total products :</label>
-    <input type="text" name="totalProducts" id="totalProducts" value="4" readonly><br>
-    <label>Total price :</label>
-    <input type="text" name="totalPrice" id="totalPrice" value="115"><br>
-    <input type="button" value="Approve">
+    <div id="container">
+        <h1>Top-Accessories</h1>
+        <table>
+            <tr>
+                <td>Total products:</td>
+                <td id="totalProducts"></td>
+            </tr>
+            <tr>
+                <td>Total price:</td>
+                <td id="totalPrice"></td>
+            </tr>
+        </table>
+        <input id="approve" type="button" value="Approve" onclick="approveOrder()">
+    </div>
+
     <script src="buy.js"></script>
 </body>
 
