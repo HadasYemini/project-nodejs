@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TopAccessories</title>
+    <link rel="stylesheet" href="signIn.css">
+</head>
+
+<body>
+    <div id="container">
+        <h1>Top-Accessories</h1>
+        <form method="post" action="/signUp" onsubmit="return signUp()">
+            <input id="email" name="email" type="email" placeholder="Enter your email adress...">
+            <input id="password" name="password" type="password" placeholder="Enter your password...">
+            <input type="button" id="signIn" value="SignIn" onclick="userValidation()">
+            <button type="submit" id="signUp" >Sign Up</button>
+        </form>
+    </div>
+    
+    <div id="error-con">
+            <input id="close-error" type="button" value="X" onclick="hideError()">
+            <p id="error"></p>
+        </div>
+    </div>
+
+    <script src="utils.js"></script>
+    <script src="signIn.js"></script>
+</body>
+
+</html>
