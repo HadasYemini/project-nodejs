@@ -9,18 +9,21 @@
 </head>
 
 <body>
-    <h1>Top-Accessories</h1>
-    <!-- <nav>
-        <select name="sort" id="sort">
-            <option value="byName">By name</option>
-            <option value="byPrice">By price</option>
-        </select>
-        <input type="button" value="sort">
-        <input type="text" value="search">
-    </nav> -->
-    <div id="products-con">
+    <div id="container">
+        <div id="header-con">
+            <select class="select" id="sort" value="" onchange="getSelectedOption()">
+                <option value="" disabled selected>Option to sort</option>
+                <option value="name">By name</option>
+                <option value="price">By price</option>
+            </select>
+            <h1>Top-Accessories</h1>
+            <input id="search" type="text" placeholder="Enter search text" oninput="searchText()">
+        </div>
+        <div id="products-con">
+        </div>
+        <input id="buy" type="button" value="Buy" onclick="buyProducts()">
     </div>
-    <input id="buy" type="button" value="Buy" onclick="buyProducts()">
+
     <script src="products.js"></script>
 </body>
 

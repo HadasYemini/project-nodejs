@@ -82,37 +82,93 @@ app.post("/addNewUser", async (req, res) => {
 
 const productsArr = [
   {
-    name: "apple",
-    price: "12",
+    name: "Set of 4 rings",
+    price: "132",
   },
   {
-    name: "bread",
-    price: "112",
+    name: "Ring",
+    price: "76",
   },
   {
-    name: "banana",
-    price: "15",
+    name: "Set of 3 bracelets",
+    price: "215",
   },
   {
-    name: "ring",
-    price: "13",
+    name: "Bracelet",
+    price: "113",
   },
   {
-    name: "shoes",
-    price: "112",
+    name: "Set of 3 necklace",
+    price: "300",
   },
   {
-    name: "book",
-    price: "17",
+    name: "Necklace",
+    price: "125",
   },
   {
-    name: "pen",
-    price: "5",
+    name: "Set of 4 earrings",
+    price: "200",
+  },
+  {
+    name: "Earrings",
+    price: "90",
+  },
+  {
+    name: "Gold chain",
+    price: "200",
+  },
+  {
+    name: "Silver chain",
+    price: "250",
+  },
+  {
+    name: "Leg bracelet",
+    price: "75",
+  },
+  {
+    name: "Set of 5 earrings",
+    price: "220",
+  },
+  {
+    name: "Bag",
+    price: "200",
+  },
+  {
+    name: "Choker necklace",
+    price: "199",
+  },
+  {
+    name: "Glasses",
+    price: "175",
+  },
+  {
+    name: "Sunglasses",
+    price: "97",
+  },
+  {
+    name: " Bead necklace",
+    price: "163",
+  },
+  {
+    name: "Scarf",
+    price: "68",
+  },
+  {
+    name: "Hair bands",
+    price: "10",
+  },
+  {
+    name: "Leather Wallet",
+    price: "156",
+  },
+  {
+    name: "Wallet",
+    price: "123",
   },
 ];
 
 app.get("/products", async (req, res) => {
-  //    await productsModel.insertMany(productsArr);
+  //await productsModel.insertMany(productsArr);
   res.sendFile(__dirname + "/client/products.html");
 });
 

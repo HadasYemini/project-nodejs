@@ -10,6 +10,16 @@ body {
     font-size: 16px;
     color: black;
 }
+#container {
+    position: fixed;
+    transform: translate(-50%, -50%);
+    width: 400px;
+    height: 300px;
+    top: 50%;
+    left: 50%;
+    border: #ec981b 2px solid;
+    padding: 20px;
+}
 
 table,
 td {
