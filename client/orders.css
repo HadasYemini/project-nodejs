@@ -10,27 +10,104 @@ body {
     font-size: 16px;
     color: black;
 }
+
 #container {
     position: fixed;
     transform: translate(-50%, -50%);
-    width: 400px;
-    height: 300px;
+    width: 800px;
+    height: 500px;
     top: 50%;
     left: 50%;
     border: #ec981b 2px solid;
     padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-table,
+#orders-con {
+    width: 100%;
+    height: 450px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    overflow-y: auto;
+}
+
+order-con {
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+    flex-direction: column;
+}
+
+order-id {
+    height: 40px;
+    justify-content: space-around;
+    display: flex;
+    align-items: center;
+}
+
+order-id:hover {
+    background-color: #f0e3b9;
+}
+
+#title-con {
+    display: flex;
+    width: 100%;
+    justify-content: space-around;
+    background-color: #f2f2f2;
+    padding: 12px;
+    font-weight: bold;
+}
+
+products-con {
+    height: auto;
+    overflow-y: auto;
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    width: 40%;
+    margin-left: 10%;
+    background-color: rgb(238, 225, 208);
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+    width: 100%;
+}
+
+th {
+    width: 100%;
+    text-align: left;
+}
+
 td {
-    border:none
+    width: 100%;
+    padding: 8px 10px;
+    text-align: left;
 }
 
-.table {
-    background-color: aqua;
+tbody {
+    display: block;
+    max-height: 550px;
+    overflow-y: auto;
+}
 
+thead {
+    background-color: rgb(238, 236, 231);
+}
+
+.price {
+    text-align: right;
 }
 
 .header {
     background-color: beige;
+}
+
+.hide {
+    display: none;
 }

@@ -1,41 +1,16 @@
 let products;
 
-const buyProducts = async () => {
-  const order = products.filter((item) =>
-    document.getElementById(item.name).classList.contains("select")
-  );
-  const user = await JSON.parse(localStorage.getItem("user"));
-
-  let res = await fetch("/saveOrder", {
-    headers: {
-      "Content-Type": "application/json",
-    },
-    method: "post",
-    body: JSON.stringify({
-      name: user.name,
-      email: user.email,
-      order,
-    }),
-  });
-  let data = await res.json();
-  if (data.Error) {
-    displayError(data.Error);
-  } else {
-    user.orderId = data._id;
-    await localStorage.setItem("user", JSON.stringify(user));
-    window.location.href = data.url;
-  }
-};
-
 const getProducts = async () => {
   let res = await fetch("/getProducts"); //get
   let data = await res.json();
   console.log("products = ", data);
   products = data;
-  initProducts([...data]);
+  displayProducts([...data]);
 };
 
-function initProducts(list) {
+getProducts();
+
+function displayProducts(list) {
   const e = document.querySelector("table");
   if (e) e.remove();
   const table = document.createElement("table");
@@ -54,11 +29,11 @@ function initProducts(list) {
   const tbody = document.createElement("tbody");
   list.forEach((item, index) => {
     let product = tbody.insertRow();
+    product.id = item.name;
     product.name = item.name;
     product.classList.add("product");
     if (item.select) product.classList.add("select");
     product.onclick = () => {
-      console.log(products.find(p => p.name === product.name))
       if (product.classList.contains("select")) {
         products.find(p => p.name === product.name).select = false
         product.classList.remove("select");
@@ -81,12 +56,9 @@ function initProducts(list) {
   con.append(table);
 }
 
-getProducts();
-
 const getSelectedOption = () => {
   const option = document.getElementById("sort").value;
-
-  console.log("Selected option:", option);
+  document.getElementById("search").value = ''
   sortProducts(option);
 };
 
@@ -97,7 +69,7 @@ const sortProducts = (id) => {
   }else{
     sortedProducts = products.toSorted((a, b) => parseFloat(a.price) - parseFloat(b.price));
   }
-  initProducts(sortedProducts);
+  displayProducts(sortedProducts);
 };
 
 const searchProducts = (arrayOfObjects, substring) => {
@@ -111,9 +83,35 @@ const searchProducts = (arrayOfObjects, substring) => {
 const searchText = () => {
   const text = document.getElementById("search").value;
   if (text === "") {
-    initProducts([...products]);
+    displayProducts([...products]);
   } else {
     const searchResults = searchProducts([...products], text);
-    initProducts(searchResults);
+    displayProducts(searchResults);
+  }
+};
+
+const buyProducts = async () => {
+  const order = products.filter((item) => item.select);
+  const user = await JSON.parse(localStorage.getItem("user"));
+// input to server
+  const res = await fetch("/saveOrder", {
+    headers: {
+      "Content-Type": "application/json",
+    },
+    method: "post",
+    body: JSON.stringify({
+      name: user.name,
+      email: user.email,
+      order,
+    }),
+  });
+// output from server
+  const data = await res.json();
+  if (data.Error) {
+    displayError(data.Error);
+  } else {
+    user.orderId = data._id;
+    await localStorage.setItem("user", JSON.stringify(user));
+    window.location.href = data.url;
   }
 };

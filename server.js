@@ -22,7 +22,7 @@ const usersModel = db.model("users", userSchema);
 
 const productSchema = db.Schema({
   name: String,
-  price: String,
+  price: Number,
   select:Boolean
 });
 
@@ -50,6 +50,7 @@ app.post("/userValidation", async (req, res) => {
     //res.status(400).json({error:"No users found"})
   } else {
     //? goto prouducts list
+    //console.log(result)
     res.json({ url: "/products", name: result[0].name });
   }
 });
@@ -84,152 +85,152 @@ app.post("/addNewUser", async (req, res) => {
 const productsArr = [
   {
     name: "Set of 4 rings",
-    price: "132",
+    price: 132,
     select: false
   },
   {
     name: "Ring",
-    price: "76",
+    price: 76,
     select: false
   },
   {
     name: "Set of 3 bracelets",
-    price: "215",
+    price: 215,
     select: false
   },
   {
     name: "Bracelet",
-    price: "113",
+    price: 113,
     select: false
   },
   {
     name: "Set of 3 necklace",
-    price: "300",
+    price: 300,
     select: false
   },
   {
     name: "Necklace",
-    price: "125",
+    price: 125,
     select: false
   },
   {
     name: "Set of 4 earrings",
-    price: "200",
+    price: 200,
     select: false
   },
   {
     name: "Earrings",
-    price: "90",
+    price: 90,
     select: false
   },
   {
     name: "Gold chain",
-    price: "200",
+    price: 200,
     select: false
   },
   {
     name: "Silver chain",
-    price: "250",
+    price: 250,
     select: false
   },
   {
     name: "Leg bracelet",
-    price: "75",
+    price: 75,
     select: false
   },
   {
     name: "Set of 5 earrings",
-    price: "220",
+    price: 220,
     select: false
   },
   {
     name: "Bag",
-    price: "200",
+    price: 200,
     select: false
   },
   {
     name: "Choker necklace",
-    price: "199",
+    price: 199,
     select: false
   },
   {
     name: "Glasses",
-    price: "175",
+    price: 175,
     select: false
   },
   {
     name: "Sunglasses",
-    price: "97",
+    price: 97,
     select: false
   },
   {
     name: " Bead necklace",
-    price: "163",
+    price: 163,
     select: false
   },
   {
     name: "Scarf",
-    price: "68",
+    price: 68,
     select: false
   },
   {
     name: "Hair bands",
-    price: "10",
+    price: 10,
     select: false
   },
   {
     name: "Leather Wallet",
-    price: "156",
+    price: 156,
     select: false
   },
   {
     name: "Wallet",
-    price: "123",
+    price: 123,
     select: false
   },
   {
     name: "Watch",
-    price: "123",
+    price: 123,
     select: false
   },
   {
     name: "Hat",
-    price: "123",
+    price: 123,
     select: false
   },
   {
     name: "Gloves",
-    price: "123",
+    price: 123,
     select: false
   },
   {
     name: "Socks",
-    price: "123",
+    price: 123,
     select: false
   },
   {
     name: "Umbrella",
-    price: "123",
+    price: 123,
     select: false
   },
   {
     name: "Shoes",
-    price: "123",
+    price: 13,
     select: false
   },
   {
     name: "Tie",
-    price: "123",
+    price: 12,
     select: false
   },
   {
     name: "Hair clip",
-    price: "123",
+    price: 13,
     select: false
   },
   {
     name: "Airpods",
-    price: "123",
+    price: 231,
     select: false
   }
 ];
@@ -241,7 +242,6 @@ app.get("/products", async (req, res) => {
 
 app.get("/getProducts", async (req, res) => {
   let products = await productsModel.find({}).select("-_id -__v");
-  console.log(`products = ${products} => get products`);
   res.json(products);
 });
 
@@ -252,11 +252,8 @@ app.get("/buy", (req, res) => {
 
 app.post("/getTotalOrder", async (req, res) => {
   let order = await ordersModel.findOne({_id:req.body.orderId}).select("-_id -__v");
-  console.log(`order = ${order} => getTotalOrder`);
-  const totalPrice = order.products.reduce(
-    (accumulator, currentItem) => accumulator + Number(currentItem.price),
-    0
-  );
+  console.log(order);
+  const totalPrice = order.products.reduce((accumulator, currentItem) => accumulator + currentItem.price,0);
   const totalProducts = order.products.length;
   res.json({ totalPrice, totalProducts });
 });
@@ -287,7 +284,7 @@ app.get("/all", middleExample, (req, res) => {
 });
 
 app.get("/getOrdersApprove", async (req, res) => {
-    const orders = await ordersModel.find({confirm:true}).select("-_id -__v -confirm")
+    const orders = await ordersModel.find({confirm:true}).select("-__v -confirm")
     if (orders.length === 0) {
         res.json({Error : 'error'})
     }else{

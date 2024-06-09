@@ -11,29 +11,64 @@ const initOrders = async () => {
 
 initOrders();
 
-function displayOrders(list) {
-  let table = document.createElement("table");
+const displayOrder = (order, orderCon) => {
+  const orderId = document.createElement("order-id");
+
+  const id = document.createElement("div");
+  id.innerHTML = order._id;
+  const name = document.createElement("div");
+  name.innerHTML = order.name;
+
+  orderId.append(id);
+  orderId.append(name);
+  orderCon.append(orderId);
+
+  orderId.onclick = (event) => {
+    const products = event.currentTarget.nextElementSibling;
+    if (products.classList.contains("hide")) {
+      products.classList.remove("hide");
+    } else {
+      products.classList.add("hide");
+    }
+  };
+  const productsCon = document.createElement("products-con");
+  productsCon.classList.add("hide");
+  const table = document.createElement("table");
   table.classList.add("table");
-  const header = table.insertRow();
-    const elem = header.insertCell();
-  for (let key in list[0]) {
-    elem.textContent = key;
-    elem.classList.add("header");
+  const thead = document.createElement("thead");
+  const th = document.createElement("th");
+  for (let key in order.products[0]) {
+    if (key !== "select") {
+      const td = document.createElement("td");
+      td.textContent = key;
+      td.classList.add(key);
+      th.appendChild(td);
+    }
   }
-  list.forEach((item, index) => {
-    const row = table.insertRow();
-    row.classList.add("row");
+  thead.appendChild(th);
+  const tbody = document.createElement("tbody");
+  order.products.forEach((item, index) => {
+    let product = tbody.insertRow();
+    product.classList.add("product");
     for (let key in item) {
-      console.log(key,item[key])
-      const elem = row.insertCell();
-      if (key != "products") {
-        row.textContent = item[key];
-      }
-      {
-        row.textContent = item[key][0].name;
+      if (key !== "select") {
+        const elem = product.insertCell();
+        elem.textContent = item[key];
+        elem.classList.add(key);
       }
     }
   });
-  let con = document.getElementById("container");
-  con.append(table);
-}
+  table.append(thead);
+  table.append(tbody);
+  productsCon.append(table);
+  orderCon.append(productsCon);
+};
+
+const displayOrders = (orders) => {
+  let con = document.getElementById("orders-con");
+  orders.forEach(async (order) => {
+    const orderCon = document.createElement("order-con");
+    await displayOrder(order, orderCon);
+    con.append(orderCon);
+  });
+};

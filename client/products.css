@@ -68,7 +68,6 @@ td {
 tbody {
     display: block;
     max-height: 550px;
-    /* Adjust the height as needed */
     overflow-y: auto;
 }
 
@@ -86,6 +85,10 @@ thead {
 
 .product.select {
     background-color: #a6cba6;
+}
+
+.price {
+    text-align: right;
 }
 
 #buy {

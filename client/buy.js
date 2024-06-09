@@ -7,12 +7,10 @@ const getTotalOrder = async () => {
     },
     method: "post",
     body: JSON.stringify({
-      name: user.name,
-      email: user.email,
       orderId: user.orderId,
     }),
   });
-  let data = await res.json();
+  const data = await res.json();
   if (data.Error) {
     displayError(data.Error);
   } else {
@@ -32,8 +30,6 @@ const approveOrder = async () => {
     },
     method: "post",
     body: JSON.stringify({
-      name: user.name,
-      email: user.email,
       orderId: user.orderId,
     }),
   });
