@@ -9,7 +9,7 @@ app.use(bp.urlencoded());
 const db = require("mongoose");
 db.connect(
 //  "mongodb+srv://hadas:hy1234hy@cluster0.nefe6tn.mongodb.net/svshopDb"
-  "mongodb+srv://ynon:ChyEqc7VUc7GbxfV@cluster0.kdysbnh.mongodb.net/svshopDb" //ynon
+    "mongodb+srv://ynon:ChyEqc7VUc7GbxfV@cluster0.kdysbnh.mongodb.net/svshopDb" //ynon
 );
 
 const userSchema = db.Schema({
@@ -23,7 +23,7 @@ const usersModel = db.model("users", userSchema);
 const productSchema = db.Schema({
   name: String,
   price: Number,
-  select:Boolean
+  select: Boolean,
 });
 
 const productsModel = db.model("products", productSchema);
@@ -44,10 +44,15 @@ app.get("/", (req, res) => {
 
 app.post("/userValidation", async (req, res) => {
   let { email, password } = req.body;
-  const result = await usersModel.find({ email, password }); // return array
+  let result = await usersModel.find({ email, password }); // return array
   if (result.length === 0) {
-    res.json({ Error: "Create account, click on signUp button" });
-    //res.status(400).json({error:"No users found"})
+    result = await usersModel.find({ email }); // return array
+    if (result.length) {
+      res.json({ Error: "You have entered an incorrect password" });
+    } else {
+      res.json({ Error: "Create account, click on signUp button" });
+      //      res.status(400).json({error:"No users found"})
+    }
   } else {
     //? goto prouducts list
     //console.log(result)
@@ -86,153 +91,153 @@ const productsArr = [
   {
     name: "Set of 4 rings",
     price: 132,
-    select: false
+    select: false,
   },
   {
     name: "Ring",
     price: 76,
-    select: false
+    select: false,
   },
   {
     name: "Set of 3 bracelets",
     price: 215,
-    select: false
+    select: false,
   },
   {
     name: "Bracelet",
     price: 113,
-    select: false
+    select: false,
   },
   {
     name: "Set of 3 necklace",
     price: 300,
-    select: false
+    select: false,
   },
   {
     name: "Necklace",
     price: 125,
-    select: false
+    select: false,
   },
   {
     name: "Set of 4 earrings",
     price: 200,
-    select: false
+    select: false,
   },
   {
     name: "Earrings",
     price: 90,
-    select: false
+    select: false,
   },
   {
     name: "Gold chain",
     price: 200,
-    select: false
+    select: false,
   },
   {
     name: "Silver chain",
     price: 250,
-    select: false
+    select: false,
   },
   {
     name: "Leg bracelet",
     price: 75,
-    select: false
+    select: false,
   },
   {
     name: "Set of 5 earrings",
     price: 220,
-    select: false
+    select: false,
   },
   {
     name: "Bag",
     price: 200,
-    select: false
+    select: false,
   },
   {
     name: "Choker necklace",
     price: 199,
-    select: false
+    select: false,
   },
   {
     name: "Glasses",
     price: 175,
-    select: false
+    select: false,
   },
   {
     name: "Sunglasses",
     price: 97,
-    select: false
+    select: false,
   },
   {
     name: " Bead necklace",
     price: 163,
-    select: false
+    select: false,
   },
   {
     name: "Scarf",
     price: 68,
-    select: false
+    select: false,
   },
   {
     name: "Hair bands",
     price: 10,
-    select: false
+    select: false,
   },
   {
     name: "Leather Wallet",
     price: 156,
-    select: false
+    select: false,
   },
   {
     name: "Wallet",
     price: 123,
-    select: false
+    select: false,
   },
   {
     name: "Watch",
     price: 123,
-    select: false
+    select: false,
   },
   {
     name: "Hat",
     price: 123,
-    select: false
+    select: false,
   },
   {
     name: "Gloves",
     price: 123,
-    select: false
+    select: false,
   },
   {
     name: "Socks",
     price: 123,
-    select: false
+    select: false,
   },
   {
     name: "Umbrella",
     price: 123,
-    select: false
+    select: false,
   },
   {
     name: "Shoes",
     price: 13,
-    select: false
+    select: false,
   },
   {
     name: "Tie",
     price: 12,
-    select: false
+    select: false,
   },
   {
     name: "Hair clip",
     price: 13,
-    select: false
+    select: false,
   },
   {
     name: "Airpods",
     price: 231,
-    select: false
-  }
+    select: false,
+  },
 ];
 
 app.get("/products", async (req, res) => {
@@ -251,32 +256,42 @@ app.get("/buy", (req, res) => {
 });
 
 app.post("/getTotalOrder", async (req, res) => {
-  let order = await ordersModel.findOne({_id:req.body.orderId}).select("-_id -__v");
+  let order = await ordersModel
+    .findOne({ _id: req.body.orderId })
+    .select("-_id -__v");
   console.log(order);
-  const totalPrice = order.products.reduce((accumulator, currentItem) => accumulator + currentItem.price,0);
+  const totalPrice = order.products.reduce(
+    (accumulator, currentItem) => accumulator + currentItem.price,
+    0
+  );
   const totalProducts = order.products.length;
   res.json({ totalPrice, totalProducts });
 });
 
 app.post("/saveOrder", async (req, res) => {
-  const order = { name : req.body.name,email: req.body.email, products: req.body.order, confirm:false };
+  const order = {
+    name: req.body.name,
+    email: req.body.email,
+    products: req.body.order,
+    confirm: false,
+  };
   const result = await ordersModel.insertMany(order);
-  console.log('/saveorder=>',result)
-  res.json({ url: "/buy" ,_id:result[0]._id});
+  console.log("/saveorder=>", result);
+  res.json({ url: "/buy", _id: result[0]._id });
 });
 
-app.post("/approveOrder", async(req,res) => {
-    const result = await ordersModel.findOneAndUpdate(
-        { _id: req.body.orderId }, // Filter: Find the document with the specified ID
-        { confirm: true }   // Update: Set the 'name' field to the new value
-    )
-    console.log('/approveOrder=>',result)
-    res.json({ url: "/exit"}); 
-})
+app.post("/approveOrder", async (req, res) => {
+  const result = await ordersModel.findOneAndUpdate(
+    { _id: req.body.orderId }, // Filter: Find the document with the specified ID
+    { confirm: true } // Update: Set the 'name' field to the new value
+  );
+  console.log("/approveOrder=>", result);
+  res.json({ url: "/exit" });
+});
 //======================= E X I T =============================/
 app.get("/exit", (req, res) => {
-    res.sendFile(__dirname + "/client/exit.html");
-  });
+  res.sendFile(__dirname + "/client/exit.html");
+});
 
 //========================= A D M I N =========================/
 app.get("/all", middleExample, (req, res) => {
@@ -284,14 +299,16 @@ app.get("/all", middleExample, (req, res) => {
 });
 
 app.get("/getOrdersApprove", async (req, res) => {
-    const orders = await ordersModel.find({confirm:true}).select("-__v -confirm")
-    if (orders.length === 0) {
-        res.json({Error : 'error'})
-    }else{
-        res.json({orders})
-    }
+  const orders = await ordersModel
+    .find({ confirm: true })
+    .select("-__v -confirm");
+  if (orders.length === 0) {
+    res.json({ Error: "error" });
+  } else {
+    res.json({ orders });
+  }
 });
-  
+
 function middleExample(req, res, next) {
   if (req.query.admin == "true") {
     next();
