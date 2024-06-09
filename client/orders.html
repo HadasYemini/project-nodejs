@@ -10,12 +10,16 @@
 
 <body>
     <div id="container">
-        <h1>Top-Accessories</h1>
+        <div id="header-con">
+            <select class="select" id="select" value="" onchange="getSelectedOption()">
+                <option value="" selected>Select a name</option>
+            </select>
+            <h1>Top-Accessories</h1>
+            <input id="search" type="text" placeholder="Enter search text" oninput="searchText()">
+        </div>
         <div id="title-con">
-            <div id="orderId">מספר הזמנה</div>
-        <div id="name">שם המזמין</div>
-    </div>
-    <div id="orders-con">
+            <div id="numberOfOrder" class="title">Number of order</div>
+            <div id="nameOrderer" class="title">Name of the orderer</div>
         </div>
     </div>
 

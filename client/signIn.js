@@ -4,10 +4,10 @@ const userValidation = async () => {
     displayError("Please enter a valid email adress");
     return false;
   }
-let password = document.getElementById("password").value;
-  if (password.length === 0) {
+  let password = document.getElementById("password").value;
+  if (!validatePassword(password)) {
     displayError("You have entered an incorrect password");
-    return false
+    return false;
   }
 
   let res = await fetch("/userValidation", {
@@ -22,15 +22,14 @@ let password = document.getElementById("password").value;
   });
   const data = await res.json();
   if (data.Error) {
-    console.log(`${data.Error} **** user validation`);
     displayError(data.Error);
   } else {
     const user = {
       email,
-      name:data.name
-    }
-    console.log('=======',user,data)
-    await localStorage.setItem('user',JSON.stringify(user))
+      name: data.name,
+    };
+    console.log("=======", user, data);
+    await localStorage.setItem("user", JSON.stringify(user));
     window.location.href = data.url;
   }
 };

@@ -67,19 +67,18 @@ input {
     background-color: #f7f6f4;
 }
 
-#close {
-    width: 20px;
-    height: 20px;
-    padding: 1px;
-    margin-left: 5px;
+#close-error {
+    width: 24px;
     border: none;
     cursor: pointer;
+    background-color: #f7f6f4;
+    font-size: 16px;
+    padding: 0px;
 }
 
 #error-con p {
+    padding-top: 20px;
     font-weight: bold;
-    padding: 16px;
     font-size: 14px;
     text-align: center;
-    line-height: 18px;
 }

@@ -15,7 +15,7 @@ body {
     position: fixed;
     transform: translate(-50%, -50%);
     width: 800px;
-    height: 500px;
+    height: 800px;
     top: 50%;
     left: 50%;
     border: #ec981b 2px solid;
@@ -25,12 +25,18 @@ body {
     align-items: center;
 }
 
-#orders-con {
+#header-con {
     width: 100%;
-    height: 450px;
+    display: flex;
+    justify-content: space-between;
+    padding: 15px;
+}
+
+orders-con {
+    width: 100%;
+    height: 750px;
     display: flex;
     flex-direction: column;
-    justify-content: space-evenly;
     overflow-y: auto;
 }
 
@@ -46,31 +52,46 @@ order-id {
     justify-content: space-around;
     display: flex;
     align-items: center;
+    cursor: pointer;
 }
 
-order-id:hover {
-    background-color: #f0e3b9;
+order-id:hover, order-id.select:hover {
+    background-color: #f3e1a7;
+}
+
+order-id.select {
+    background-color: #f3e7ce;
+}
+
+#_id, #name {
+    width: 50%;
+    text-align: left;
 }
 
 #title-con {
     display: flex;
     width: 100%;
-    justify-content: space-around;
+    justify-content: space-evenly;
     background-color: #f2f2f2;
-    padding: 12px;
+    padding: 12px 18px 12px 0px;
     font-weight: bold;
+}
+
+.title {
+    width: 50%;
+    text-align: left;
 }
 
 products-con {
     height: auto;
     overflow-y: auto;
+    width: 50%;
 }
 
 table {
     border-collapse: collapse;
     border-spacing: 0;
-    width: 40%;
-    margin-left: 10%;
+    width: 70%;
     background-color: rgb(238, 225, 208);
 }
 
@@ -110,4 +131,13 @@ thead {
 
 .hide {
     display: none;
+}
+
+#select, #search {
+    padding: 4px;
+    border: #f1d9b3 1px solid;
+    border-radius: 4px;
+    background-color: #f8f6f4;
+    height: 40px;
+    cursor: pointer;
 }

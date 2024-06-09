@@ -1,11 +1,14 @@
+let orders;
+
 const initOrders = async () => {
   let res = await fetch("/getOrdersApprove");
   let data = await res.json();
   if (data.Error) {
     displayError(data.Error);
   } else {
-    console.log(data.orders);
-    displayOrders(data.orders);
+    orders = data.orders;
+    displayOrders([...orders]);
+    setSelectOptions(orders);
   }
 };
 
@@ -15,8 +18,10 @@ const displayOrder = (order, orderCon) => {
   const orderId = document.createElement("order-id");
 
   const id = document.createElement("div");
+  id.id = "_id"
   id.innerHTML = order._id;
   const name = document.createElement("div");
+  name.id = "name"
   name.innerHTML = order.name;
 
   orderId.append(id);
@@ -26,8 +31,10 @@ const displayOrder = (order, orderCon) => {
   orderId.onclick = (event) => {
     const products = event.currentTarget.nextElementSibling;
     if (products.classList.contains("hide")) {
+      orderId.classList.add('select')
       products.classList.remove("hide");
     } else {
+      orderId.classList.remove('select')
       products.classList.add("hide");
     }
   };
@@ -65,10 +72,60 @@ const displayOrder = (order, orderCon) => {
 };
 
 const displayOrders = (orders) => {
-  let con = document.getElementById("orders-con");
+  const e = document.querySelector("orders-con");
+  if (e) e.remove();
+
+  const con = document.getElementById("container");
+  const ordersCon = document.createElement("orders-con");
   orders.forEach(async (order) => {
     const orderCon = document.createElement("order-con");
     await displayOrder(order, orderCon);
-    con.append(orderCon);
+    ordersCon.append(orderCon);
   });
+  con.append(ordersCon);
+};
+
+const getUnique = (arr, key) => {
+  const uniqueKey = new Set();
+  arr.forEach((item) => uniqueKey.add(item[key].trim()));
+  return Array.from(uniqueKey);
+};
+
+const setSelectOptions = (orders) => {
+  const selectOptions = getUnique(orders, "name");
+  const select = document.getElementById("select");
+  selectOptions.forEach((option) => {
+    const elem = document.createElement("option");
+    elem.value = option;
+    elem.innerHTML = option;
+    select.append(elem);
+  });
+};
+
+const getSelectedOption = () => {
+  const option = document.getElementById("select").value;
+  document.getElementById("search").value = "";
+  displayOrders(searchOrders([...orders], option, "name"));
+};
+
+const searchOrders = (arrayOfObjects, option, key) => {
+  const searchResult = arrayOfObjects.filter((obj) => {
+    const search = obj[key].toLowerCase();
+    return search.startsWith(option.toLowerCase())
+  });
+  return searchResult;
+};
+
+const searchText = () => {
+  const text = document.getElementById("search").value;
+  if (text === "") {
+    displayOrders([...orders]);
+  } else {
+    let searchResults = searchOrders([...orders], text, '_id');
+    if (searchResults.length) displayOrders(searchResults);
+    else {
+      searchResults = searchOrders([...orders], text, 'name');
+      displayOrders(searchResults);
+    }
+  }
 };

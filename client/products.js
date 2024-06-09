@@ -10,7 +10,7 @@ const getProducts = async () => {
 
 getProducts();
 
-function displayProducts(list) {
+const displayProducts = (list) => {
   const e = document.querySelector("table");
   if (e) e.remove();
   const table = document.createElement("table");
