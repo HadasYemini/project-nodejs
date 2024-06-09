@@ -8,8 +8,8 @@ app.use(bp.urlencoded());
 
 const db = require("mongoose");
 db.connect(
-  "mongodb+srv://hadas:hy1234hy@cluster0.nefe6tn.mongodb.net/svshopDb"
-//  "mongodb+srv://ynon:ChyEqc7VUc7GbxfV@cluster0.kdysbnh.mongodb.net/svshopDb" //ynon
+//  "mongodb+srv://hadas:hy1234hy@cluster0.nefe6tn.mongodb.net/svshopDb"
+  "mongodb+srv://ynon:ChyEqc7VUc7GbxfV@cluster0.kdysbnh.mongodb.net/svshopDb" //ynon
 );
 
 const userSchema = db.Schema({
