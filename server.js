@@ -7,9 +7,10 @@ app.use(bp.json());
 app.use(bp.urlencoded());
 
 const db = require("mongoose");
+const { truncate } = require("fs-extra");
 db.connect(
-//  "mongodb+srv://hadas:hy1234hy@cluster0.nefe6tn.mongodb.net/svshopDb"
-    "mongodb+srv://ynon:ChyEqc7VUc7GbxfV@cluster0.kdysbnh.mongodb.net/svshopDb" //ynon
+  "mongodb+srv://hadas:hy1234hy@cluster0.nefe6tn.mongodb.net/svshopDb"
+  //    "mongodb+srv://ynon:ChyEqc7VUc7GbxfV@cluster0.kdysbnh.mongodb.net/svshopDb" //ynon
 );
 
 const userSchema = db.Schema({
@@ -31,7 +32,7 @@ const productsModel = db.model("products", productSchema);
 const orderSchema = db.Schema({
   name: String,
   email: String,
-  products: Array, //list {name,price}
+  products: Array, //list {name,price} products[productSchema]
   confirm: Boolean,
 });
 
@@ -44,19 +45,22 @@ app.get("/", (req, res) => {
 
 app.post("/userValidation", async (req, res) => {
   let { email, password } = req.body;
-  let result = await usersModel.find({ email, password }); // return array
-  if (result.length === 0) {
-    result = await usersModel.find({ email }); // return array
-    if (result.length) {
-      res.json({ Error: "You have entered an incorrect password" });
+  try {
+    let result = await usersModel.find({ email, password }); // return array
+    if (result.length === 0) {
+      result = await usersModel.find({ email }); 
+      if (result.length) {
+        res.json({ error: "You entered an incorrect password" });
+      } else {
+        res.json({error: "No users found, please create an account, click on signUp button" });
+      }
     } else {
-      res.json({ Error: "Create account, click on signUp button" });
-      //      res.status(400).json({error:"No users found"})
+      //? goto prouducts list
+      res.json({ url: "/products", name: result[0].name });
     }
-  } else {
-    //? goto prouducts list
-    //console.log(result)
-    res.json({ url: "/products", name: result[0].name });
+      
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
@@ -73,16 +77,20 @@ app.post("/addNewUser", async (req, res) => {
     password: req.body.password,
   };
 
-  let result = await usersModel.find({ email: user.email }); // return array
-  if (result.length) {
-    res.json({ Error: "המשתמש קיים במערכת" });
-  } else {
-    await usersModel.insertMany(user);
-    //? goto prouducts list
-    res.json({ url: "/products" });
+  try {
+    let result = await usersModel.find({ email: user.email }); // return array
+    if (result.length) {
+      res.json({ error: "The user exists in the system" });
+    } else {
+      await usersModel.insertMany(user);
+      //? goto prouducts list
+      res.json({ url: "/products" });
+    }
+  } catch {
+    res.status(500).json({ error: "Internal Server Error" });
   }
 
-  console.log(result);
+  
 });
 
 //====================== P R O D U C T S ===============================/
@@ -246,26 +254,17 @@ app.get("/products", async (req, res) => {
 });
 
 app.get("/getProducts", async (req, res) => {
-  let products = await productsModel.find({}).select("-_id -__v");
-  res.json(products);
+  try {
+    let products = await productsModel.find({}).select("-_id -__v");
+    res.json(products);
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 });
 
 //====================== B U Y ===============================/
 app.get("/buy", (req, res) => {
   res.sendFile(__dirname + "/client/buy.html");
-});
-
-app.post("/getTotalOrder", async (req, res) => {
-  let order = await ordersModel
-    .findOne({ _id: req.body.orderId })
-    .select("-_id -__v");
-  console.log(order);
-  const totalPrice = order.products.reduce(
-    (accumulator, currentItem) => accumulator + currentItem.price,
-    0
-  );
-  const totalProducts = order.products.length;
-  res.json({ totalPrice, totalProducts });
 });
 
 app.post("/saveOrder", async (req, res) => {
@@ -275,18 +274,24 @@ app.post("/saveOrder", async (req, res) => {
     products: req.body.order,
     confirm: false,
   };
-  const result = await ordersModel.insertMany(order);
-  console.log("/saveorder=>", result);
-  res.json({ url: "/buy", _id: result[0]._id });
+  try {
+    const result = await ordersModel.insertMany(order);
+    res.json({ url: "/buy", _id: result[0]._id });
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 });
 
 app.post("/approveOrder", async (req, res) => {
-  const result = await ordersModel.findOneAndUpdate(
-    { _id: req.body.orderId }, // Filter: Find the document with the specified ID
-    { confirm: true } // Update: Set the 'name' field to the new value
-  );
-  console.log("/approveOrder=>", result);
-  res.json({ url: "/exit" });
+  try {
+    const result = await ordersModel.findOneAndUpdate(
+      { _id: req.body.orderId }, // Filter: Find the document with the specified ID
+      { confirm: true } // Update: Set the 'name' field to the new value
+    );
+    res.json({ url: "/exit" });  
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });   
+  }
 });
 //======================= E X I T =============================/
 app.get("/exit", (req, res) => {
@@ -299,13 +304,15 @@ app.get("/all", middleExample, (req, res) => {
 });
 
 app.get("/getOrdersApprove", async (req, res) => {
-  const orders = await ordersModel
-    .find({ confirm: true })
-    .select("-__v -confirm");
-  if (orders.length === 0) {
-    res.json({ Error: "error" });
-  } else {
-    res.json({ orders });
+  try {
+    const orders = await ordersModel.find({ confirm: true }).select("-__v -confirm");
+    if (orders.length === 0) {
+      res.json({ error: "There are no orders" });
+    } else {
+      res.json({ orders });
+    }   
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });   
   }
 });
 
@@ -313,7 +320,7 @@ function middleExample(req, res, next) {
   if (req.query.admin == "true") {
     next();
   } else {
-    res.json({ message: " you are not admin", error: 400 });
+    res.status(400).json({ error: "you are not admin" });
   }
 }
 

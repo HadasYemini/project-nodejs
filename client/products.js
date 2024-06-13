@@ -1,11 +1,13 @@
 let products;
 
 const getProducts = async () => {
+  const user = await JSON.parse(localStorage.getItem("user"));
+  if (!user) {
+   window.location.href = '/'
+  }
   let res = await fetch("/getProducts"); //get
-  let data = await res.json();
-  console.log("products = ", data);
-  products = data;
-  displayProducts([...data]);
+  products = await res.json();
+  displayProducts([...products]);
 };
 
 getProducts();
@@ -27,7 +29,7 @@ const displayProducts = (list) => {
   }
   thead.appendChild(th);
   const tbody = document.createElement("tbody");
-  list.forEach((item, index) => {
+  list.forEach((item) => {
     let product = tbody.insertRow();
     product.id = item.name;
     product.name = item.name;
@@ -67,7 +69,7 @@ const sortProducts = (id) => {
   if (id === 'name') {
    sortedProducts = products.toSorted((a, b) => a.name.trim().toLowerCase().localeCompare(b.name.trim().toLowerCase()));
   }else{
-    sortedProducts = products.toSorted((a, b) => parseFloat(a.price) - parseFloat(b.price));
+    sortedProducts = products.toSorted((a, b) => a.price - b.price);
   }
   displayProducts(sortedProducts);
 };
@@ -88,11 +90,21 @@ const searchText = () => {
     const searchResults = searchProducts([...products], text);
     displayProducts(searchResults);
   }
+  document.getElementById("sort").value=""
 };
 
 const buyProducts = async () => {
   const order = products.filter((item) => item.select);
+  if (order.length === 0) {
+    displayMessage('Nothing has been added to cart')
+    return
+  }
+  const totalPrice = order.reduce((accumulator, currentItem) => accumulator + currentItem.price,0);
+  const totalProducts = order.length;
+
   const user = await JSON.parse(localStorage.getItem("user"));
+  user.totalPrice = totalPrice
+  user.totalProducts = totalProducts
 // input to server
   const res = await fetch("/saveOrder", {
     headers: {
@@ -107,8 +119,8 @@ const buyProducts = async () => {
   });
 // output from server
   const data = await res.json();
-  if (data.Error) {
-    displayError(data.Error);
+  if (data.error) {
+    displayMessage(data.error);
   } else {
     user.orderId = data._id;
     await localStorage.setItem("user", JSON.stringify(user));

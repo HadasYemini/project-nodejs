@@ -3,8 +3,8 @@ let orders;
 const initOrders = async () => {
   let res = await fetch("/getOrdersApprove");
   let data = await res.json();
-  if (data.Error) {
-    displayError(data.Error);
+  if (data.error) {
+    displayError(data.error);
   } else {
     orders = data.orders;
     displayOrders([...orders]);
@@ -128,4 +128,5 @@ const searchText = () => {
       displayOrders(searchResults);
     }
   }
+  document.getElementById("select").value=""
 };

@@ -20,7 +20,7 @@ h1 {
     position: fixed;
     transform: translate(-50%, -50%);
     width: 600px;
-    height: 800px;
+    height: 700px;
     top: 50%;
     left: 50%;
     border: #ec981b 2px solid;
@@ -61,13 +61,13 @@ td {
 }
 
 #products-con {
-    height: 700px;
+    height: 600px;
     overflow-y: auto;
 }
 
 tbody {
     display: block;
-    max-height: 550px;
+    max-height: 480px;
     overflow-y: auto;
 }
 

@@ -6,13 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TopAccessories</title>
     <link rel="stylesheet" href="products.css">
+    <link rel="stylesheet" href="message.css">
 </head>
 
 <body>
     <div id="container">
         <div id="header-con">
             <select class="select" id="sort" value="" onchange="getSelectedOption()">
-                <option value="" disabled selected>Option to sort</option>
+                <option value="" selected>Option to sort</option>
                 <option value="name">By name</option>
                 <option value="price">By price</option>
             </select>
@@ -23,7 +24,12 @@
         </div>
         <input id="buy" type="button" value="Buy" onclick="buyProducts()">
     </div>
+    <div id="message-con">
+        <input id="close-message" type="button" value="X" onclick="hideMessage()">
+        <p id="message"></p>
+    </div>
 
+    <script src="utils.js"></script>
     <script src="products.js"></script>
 </body>
 

@@ -1,10 +1,10 @@
-const displayError = (error) => {
-  document.getElementById("error-con").style.display = "block";
-  document.getElementById("error").innerHTML = error;
+const displayMessage = (message) => {
+  document.getElementById("message-con").style.display = "block";
+  document.getElementById("message").innerHTML = message;
 };
 
-const hideError = (id) => {
-  document.getElementById("error-con").style.display = "none";
+const hideMessage = (id) => {
+  document.getElementById("message-con").style.display = "none";
 };
 
 const validateEmail = (email) => {

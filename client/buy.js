@@ -1,22 +1,7 @@
 const getTotalOrder = async () => {
   const user = await JSON.parse(localStorage.getItem("user"));
-  console.log(user, user.name);
-  let res = await fetch("/getTotalOrder", {
-    headers: {
-      "Content-Type": "application/json",
-    },
-    method: "post",
-    body: JSON.stringify({
-      orderId: user.orderId,
-    }),
-  });
-  const data = await res.json();
-  if (data.Error) {
-    displayError(data.Error);
-  } else {
-    document.getElementById("totalProducts").innerHTML = data.totalProducts;
-    document.getElementById("totalPrice").innerHTML = data.totalPrice;
-  }
+  document.getElementById("totalProducts").innerHTML = user.totalProducts;
+  document.getElementById("totalPrice").innerHTML = user.totalPrice;
 };
 
 getTotalOrder();
@@ -37,6 +22,7 @@ const approveOrder = async () => {
   if (data.Error) {
     displayError(data.Error);
   } else {
+    localStorage.clear()
     window.location.href = data.url;
   }
 };
